@@ -424,7 +424,297 @@ def dpo_loss(
       "Both training-time and inference-time mitigations",
       "Ongoing post-deployment red-teaming, not just pre-launch"
     ]
-  }
+  },
+  {
+    id: "dl-009",
+    type: "knowledge",
+    category: "deep-learning-llms",
+    categoryLabel: "Deep Learning & LLMs",
+    difficulty: "core",
+    title: "Prompt Engineering Techniques",
+    tags: ["prompt-engineering", "few-shot", "chain-of-thought"],
+    question:
+      "Compare zero-shot, few-shot, chain-of-thought (CoT), self-consistency, and tree-of-thought (ToT) prompting. For each technique, explain what it does, when to use it, and its primary limitation.",
+    format: "short-answer",
+    correctAnswer:
+      "Zero-shot: Prompt the model with only the task description, no examples. Works for tasks the model has seen extensively during training. Limitation: fails on novel tasks requiring multi-step reasoning or domain-specific formats.\n\nFew-shot: Include 3-10 labeled examples in the prompt before the query. Dramatically improves accuracy on structured output tasks and domain-specific formats. Limitation: consumes context window, sensitive to example selection and order, expensive at inference time.\n\nChain-of-Thought (CoT): Prompt the model to produce intermediate reasoning steps before the final answer ('Let's think step by step'). Significantly improves performance on arithmetic, commonsense, and multi-step reasoning tasks. Limitation: only effective for models above ~100B parameters; incorrect reasoning chains can still lead to wrong answers.\n\nSelf-Consistency: Generate N independent CoT reasoning paths (via sampling with temperature > 0), then take the majority vote over the final answers. Improves accuracy by 5-15% on reasoning benchmarks over single-sample CoT. Limitation: N× more expensive; ineffective when the majority of paths make the same systematic error.\n\nTree-of-Thought (ToT): Decompose the problem into a tree of intermediate steps, generating and evaluating multiple candidates at each step using a value function (LLM or heuristic). Enables backtracking and deliberate search over reasoning paths. Limitation: much more expensive and complex to implement than CoT or self-consistency; overkill for most tasks.",
+    explanation:
+      "Prompting techniques form a progression from simple to complex: zero-shot (no examples) -> few-shot (examples) -> CoT (reasoning traces) -> self-consistency (sampling + voting) -> ToT (search over reasoning trees). The right technique depends on task complexity, model size, latency tolerance, and cost budget. For most production applications, few-shot + CoT is the sweet spot. Self-consistency is reserved for high-stakes accuracy-critical tasks. ToT is primarily a research technique for extremely hard planning problems.",
+  },
+  {
+    id: "dl-010",
+    type: "knowledge",
+    category: "deep-learning-llms",
+    categoryLabel: "Deep Learning & LLMs",
+    difficulty: "standard",
+    title: "KV Cache and Inference Optimization",
+    tags: ["kv-cache", "inference", "quantization", "optimization"],
+    question:
+      "Explain the KV cache and four inference optimization techniques: speculative decoding, continuous batching, INT8 quantization, and GPTQ/AWQ weight-only quantization. For each, describe the mechanism and the primary tradeoff.",
+    format: "short-answer",
+    correctAnswer:
+      "KV Cache: During autoregressive generation, the key and value tensors from past tokens in the attention layers are cached so they don't need to be recomputed for each new token. Without a KV cache, generating T tokens requires O(T^2) attention computations; with a KV cache it's O(T). The tradeoff: the cache grows linearly with sequence length and batch size, consuming significant GPU memory (see PagedAttention for management).\n\nSpeculative Decoding: A fast small 'draft' model generates K tokens in parallel, then the large 'verifier' model checks all K tokens in a single forward pass (which is only marginally more expensive than checking 1 token due to parallelism). Accepted tokens are kept; the first rejected token triggers resampling. Typical speedup: 2-4x for latency-bound generation with matching token distribution. Tradeoff: requires a well-matched draft model; acceptance rate drops if draft model quality is poor.\n\nContinuous Batching: Rather than waiting for all sequences in a batch to finish before processing new ones, the scheduler slots new sequences into positions vacated by completed sequences at each decode iteration. This keeps the batch full and GPU utilization high. Tradeoff: more complex scheduler; sequences in the same batch may have very different lengths, requiring padding or dynamic batching.\n\nINT8 Activation + Weight Quantization (LLM.int8): Quantize both activations and weights to INT8 during linear layer computation. Use absmax per-channel scaling to limit quantization error. Reduces memory by ~2x with <1% quality degradation on most benchmarks. Tradeoff: requires calibration data; some outlier activations require mixed-precision handling (LLM.int8 handles this with vector-wise decomposition).\n\nGPTQ/AWQ (Weight-Only Quantization): Quantize model weights to INT4 or INT3 at inference time while keeping activations in FP16. GPTQ uses second-order information (Hessian) to minimize quantization error layer by layer. AWQ identifies the ~1% of salient weights and protects them. Result: 4-bit models run at ~4x less memory with 2-4x speedup on memory-bandwidth-bound decode. Tradeoff: INT4 GPTQ has ~1-2% quality loss vs FP16; requires a one-time expensive quantization step.",
+    explanation:
+      "LLM inference optimization is an active research and engineering area because autoregressive decode is inherently sequential and memory-bandwidth-bound. The optimization hierarchy: (1) KV cache is mandatory for any production deployment; (2) quantization (INT8 or INT4) reduces memory pressure and increases effective batch size; (3) speculative decoding reduces latency for interactive applications; (4) continuous batching maximizes throughput for serving systems. These techniques are complementary and are all used simultaneously in production inference engines like vLLM and TGI.",
+  },
+  {
+    id: "dl-011",
+    type: "coding",
+    category: "deep-learning-llms",
+    categoryLabel: "Deep Learning & LLMs",
+    difficulty: "stretch",
+    title: "Distributed Training with FSDP",
+    tags: ["fsdp", "distributed-training", "activation-checkpointing"],
+    question:
+      "Implement a PyTorch FSDP training script for a transformer model. The script should: (1) wrap the model with FSDP using a transformer auto-wrap policy, (2) enable activation checkpointing on each transformer block, (3) use a mixed-precision policy (BF16 for parameters and activations, FP32 for reduction), and (4) implement a correct distributed training loop with gradient clipping. The script should initialize the distributed process group and clean up properly.",
+    hint: "Use transformer_auto_wrap_policy with the specific TransformerBlock class. Activation checkpointing in FSDP uses checkpoint_wrapper applied before FSDP wrapping. Mixed precision is configured via MixedPrecision. Remember that FSDP allreduces gradients automatically — do NOT call loss.backward() inside no_sync() unless you intend to accumulate.",
+    starterCode: `import torch
+import torch.nn as nn
+import torch.distributed as dist
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from torch.distributed.fsdp import MixedPrecision
+from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
+from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
+    checkpoint_wrapper,
+    CheckpointImpl,
+    apply_activation_checkpointing,
+)
+import functools
+import os
+
+
+class TransformerBlock(nn.Module):
+    """A single transformer block (attention + FFN). Stand-in for a real block."""
+    def __init__(self, d_model: int, nhead: int, dim_feedforward: int):
+        super().__init__()
+        self.attn = nn.MultiheadAttention(d_model, nhead, batch_first=True)
+        self.ff = nn.Sequential(
+            nn.Linear(d_model, dim_feedforward),
+            nn.GELU(),
+            nn.Linear(dim_feedforward, d_model),
+        )
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        attn_out, _ = self.attn(x, x, x)
+        x = self.norm1(x + attn_out)
+        x = self.norm2(x + self.ff(x))
+        return x
+
+
+class SimpleTransformer(nn.Module):
+    def __init__(self, d_model=512, nhead=8, num_layers=6, vocab_size=32000):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, d_model)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, nhead, d_model * 4)
+            for _ in range(num_layers)
+        ])
+        self.head = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x):
+        x = self.embed(x)
+        for block in self.blocks:
+            x = block(x)
+        return self.head(x)
+
+
+def setup(rank: int, world_size: int):
+    """Initialize the distributed process group."""
+    # TODO: init_process_group with nccl backend
+    pass
+
+
+def teardown():
+    """Clean up the distributed process group."""
+    # TODO
+    pass
+
+
+def wrap_model_with_fsdp(model: nn.Module) -> FSDP:
+    """
+    Wrap the model with FSDP:
+    1. Use transformer_auto_wrap_policy for TransformerBlock
+    2. Apply BF16 mixed precision
+    3. Apply activation checkpointing to each TransformerBlock
+    """
+    # TODO
+    pass
+
+
+def train(rank: int, world_size: int):
+    setup(rank, world_size)
+    torch.cuda.set_device(rank)
+
+    model = SimpleTransformer().to(rank)
+    model = wrap_model_with_fsdp(model)
+
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+
+    # TODO: Implement training loop
+    # - Generate a random batch of token IDs
+    # - Forward pass, compute cross-entropy loss
+    # - Backward pass with gradient clipping (max_norm=1.0)
+    # - Optimizer step
+
+    teardown()
+
+
+if __name__ == "__main__":
+    world_size = torch.cuda.device_count()
+    torch.multiprocessing.spawn(train, args=(world_size,), nprocs=world_size, join=True)
+`,
+    solution: `import torch
+import torch.nn as nn
+import torch.distributed as dist
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+from torch.distributed.fsdp import MixedPrecision, ShardingStrategy
+from torch.distributed.fsdp.wrap import transformer_auto_wrap_policy
+from torch.distributed.algorithms._checkpoint.checkpoint_wrapper import (
+    checkpoint_wrapper,
+    CheckpointImpl,
+    apply_activation_checkpointing,
+)
+import functools
+import os
+
+
+class TransformerBlock(nn.Module):
+    def __init__(self, d_model: int, nhead: int, dim_feedforward: int):
+        super().__init__()
+        self.attn = nn.MultiheadAttention(d_model, nhead, batch_first=True)
+        self.ff = nn.Sequential(
+            nn.Linear(d_model, dim_feedforward),
+            nn.GELU(),
+            nn.Linear(dim_feedforward, d_model),
+        )
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        attn_out, _ = self.attn(x, x, x)
+        x = self.norm1(x + attn_out)
+        x = self.norm2(x + self.ff(x))
+        return x
+
+
+class SimpleTransformer(nn.Module):
+    def __init__(self, d_model=512, nhead=8, num_layers=6, vocab_size=32000):
+        super().__init__()
+        self.embed = nn.Embedding(vocab_size, d_model)
+        self.blocks = nn.ModuleList([
+            TransformerBlock(d_model, nhead, d_model * 4)
+            for _ in range(num_layers)
+        ])
+        self.head = nn.Linear(d_model, vocab_size)
+
+    def forward(self, x):
+        x = self.embed(x)
+        for block in self.blocks:
+            x = block(x)
+        return self.head(x)
+
+
+def setup(rank: int, world_size: int):
+    os.environ["MASTER_ADDR"] = "localhost"
+    os.environ["MASTER_PORT"] = "12355"
+    dist.init_process_group(backend="nccl", rank=rank, world_size=world_size)
+
+
+def teardown():
+    dist.destroy_process_group()
+
+
+def wrap_model_with_fsdp(model: nn.Module) -> FSDP:
+    # BF16 mixed precision: parameters and activations in BF16, reductions in FP32
+    bf16_policy = MixedPrecision(
+        param_dtype=torch.bfloat16,
+        reduce_dtype=torch.float32,
+        buffer_dtype=torch.bfloat16,
+    )
+
+    # Auto-wrap policy: shard at TransformerBlock boundaries
+    auto_wrap_policy = functools.partial(
+        transformer_auto_wrap_policy,
+        transformer_layer_cls={TransformerBlock},
+    )
+
+    # Apply activation checkpointing to each TransformerBlock before FSDP wrapping
+    non_reentrant_wrapper = functools.partial(
+        checkpoint_wrapper,
+        checkpoint_impl=CheckpointImpl.NO_REENTRANT,
+    )
+    check_fn = lambda submodule: isinstance(submodule, TransformerBlock)
+    apply_activation_checkpointing(model, checkpoint_wrapper_fn=non_reentrant_wrapper, check_fn=check_fn)
+
+    # Wrap with FSDP (ZeRO Stage 3 = FULL_SHARD)
+    fsdp_model = FSDP(
+        model,
+        auto_wrap_policy=auto_wrap_policy,
+        mixed_precision=bf16_policy,
+        sharding_strategy=ShardingStrategy.FULL_SHARD,
+        device_id=torch.cuda.current_device(),
+    )
+    return fsdp_model
+
+
+def train(rank: int, world_size: int):
+    setup(rank, world_size)
+    torch.cuda.set_device(rank)
+
+    model = SimpleTransformer().to(rank)
+    model = wrap_model_with_fsdp(model)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+
+    # Training loop
+    for step in range(10):
+        # Random batch: (batch_size=4, seq_len=128)
+        input_ids = torch.randint(0, 32000, (4, 128), device=rank)
+        labels = torch.randint(0, 32000, (4, 128), device=rank)
+
+        optimizer.zero_grad()
+        logits = model(input_ids)  # (4, 128, vocab_size)
+        loss = torch.nn.functional.cross_entropy(
+            logits.view(-1, logits.size(-1)), labels.view(-1)
+        )
+        loss.backward()
+
+        # Gradient clipping must happen before optimizer.step()
+        # FSDP exposes clip_grad_norm_ directly
+        model.clip_grad_norm_(max_norm=1.0)
+
+        optimizer.step()
+
+        if rank == 0:
+            print(f"Step {step}: loss = {loss.item():.4f}")
+
+    teardown()
+
+
+if __name__ == "__main__":
+    world_size = torch.cuda.device_count()
+    torch.multiprocessing.spawn(train, args=(world_size,), nprocs=world_size, join=True)
+`,
+    explanation:
+      "FSDP (Fully Sharded Data Parallel) is PyTorch's implementation of ZeRO Stage 3: parameters, gradients, and optimizer states are all sharded across ranks. The transformer_auto_wrap_policy is critical — it tells FSDP to shard at TransformerBlock boundaries, which is more efficient than sharding every individual layer. Activation checkpointing must be applied before FSDP wrapping because FSDP needs to see the final module structure. The NO_REENTRANT checkpoint implementation avoids compatibility issues with FSDP's custom backward hooks. MixedPrecision configures BF16 for compute (faster on H100) with FP32 for gradient reductions (for numerical stability). FSDP.clip_grad_norm_ is used instead of torch.nn.utils.clip_grad_norm_ because FSDP shards gradients — the standard function would only see each rank's shard and compute an incorrect norm.",
+    testCases: [
+      {
+        input: "Run with world_size=2 on 2 GPUs",
+        expected: "Both ranks initialize, loss decreases over 10 steps, process group cleans up without error",
+      },
+      {
+        input: "Check that model.clip_grad_norm_(1.0) is used instead of torch.nn.utils.clip_grad_norm_",
+        expected: "FSDP-aware gradient clipping produces correct global gradient norm across all shards",
+      },
+      {
+        input: "Inspect memory usage after FSDP wrapping",
+        expected: "Each GPU holds ~1/world_size of model parameters rather than the full model",
+      },
+    ],
+    timeComplexity: "O(steps * batch_size * seq_len * model_params / world_size) — linear scale-out with world_size",
+    spaceComplexity: "O(model_params / world_size) per GPU for sharded parameters, plus O(batch * seq_len * d_model) for activations",
+  },
 ];
 
 export default deepLearningLLMs;

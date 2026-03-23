@@ -5,7 +5,7 @@ const mlSystemDesign = [
     type: "coding",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Distributed Sampler",
     tags: ["distributed-training", "data-loading", "pytorch"],
     question:
@@ -93,7 +93,7 @@ class DistributedSampler:
     type: "coding",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Gradient Accumulation with Mixed Precision",
     tags: ["gradient-accumulation", "mixed-precision", "pytorch", "amp"],
     question:
@@ -175,7 +175,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "knowledge",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Core",
+    difficulty: "core",
     title: "Data Parallel vs Model Parallel vs Pipeline Parallel",
     tags: ["distributed-training", "parallelism", "scaling"],
     question:
@@ -196,7 +196,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "knowledge",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "FSDP/ZeRO Stages",
     tags: ["FSDP", "ZeRO", "deepspeed", "memory-optimization"],
     question:
@@ -213,7 +213,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "knowledge",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Activation Checkpointing Tradeoffs",
     tags: ["activation-checkpointing", "memory-optimization", "compute-tradeoff"],
     question:
@@ -236,7 +236,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "open-ended",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Stretch",
+    difficulty: "stretch",
     title: "End-to-End Distributed Training System",
     tags: ["system-design", "distributed-training", "infrastructure"],
     question:
@@ -267,7 +267,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "open-ended",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "GPU Memory Budget for 70B Model on 8xA100",
     tags: ["memory-estimation", "sharding", "gpu-memory"],
     question:
@@ -298,7 +298,7 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
     type: "open-ended",
     category: "ml-system-design",
     categoryLabel: "ML System Design",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Personalized News Ranking System",
     tags: ["ranking", "recommendation", "system-design", "meta-style"],
     question:
@@ -322,6 +322,136 @@ def train_step_with_accumulation(model, data_loader, optimizer, loss_fn, accumul
       "Position bias correction is necessary when training on logged data",
       "Feature stores with both batch and real-time pipelines are standard",
       "A/B testing with guardrail metrics prevents optimizing engagement at the cost of user well-being",
+    ],
+  },
+  {
+    id: "msd-009",
+    type: "open-ended",
+    category: "ml-system-design",
+    categoryLabel: "ML System Design",
+    difficulty: "standard",
+    title: "RAG Pipeline Design",
+    tags: ["rag", "retrieval", "vector-db", "embeddings", "reranking"],
+    question:
+      "Design an end-to-end Retrieval-Augmented Generation (RAG) pipeline. Cover document ingestion and preprocessing, chunking strategies, embedding model selection, vector database choice, retrieval with reranking, and final generation with inline citations.",
+    context:
+      "You are building a RAG system for an enterprise knowledge base with ~500K documents (PDFs, HTML, markdown). Users ask natural-language questions and expect accurate, cited answers. The system must handle documents up to 100 pages long and support multilingual queries.",
+    rubric: [
+      "Ingestion & Preprocessing: Describes document parsing (PDF, HTML, markdown), text extraction, deduplication, and metadata extraction (source, date, author)",
+      "Chunking Strategy: Discusses fixed-size vs. semantic chunking, overlap strategy, handling tables/figures, and the tradeoff between chunk size and retrieval precision",
+      "Embedding Model: Justifies model selection (size, multilingual support, domain), discusses batch encoding and index updates for new documents",
+      "Vector DB: Selects an appropriate vector store (Pinecone, Weaviate, pgvector, etc.) and discusses indexing (HNSW vs. IVF), filtering by metadata, and scale",
+      "Retrieval + Reranking: Describes hybrid search (dense + sparse BM25), top-k retrieval, and a cross-encoder reranker for precision",
+      "Generation with Citations: Explains context assembly, prompt design with source grounding, and citation injection into the response",
+      "Failure modes: Handles out-of-domain queries, hallucination mitigation, stale documents, and query routing",
+    ],
+    sampleAnswer:
+      "Ingestion: A document ingestion service parses raw files using libraries like PyMuPDF (PDF), BeautifulSoup (HTML), and mistune (markdown). Each parsed document is stored with metadata (source_url, doc_id, ingestion_ts, language). Deduplication uses a content hash at the document level.\n\nChunking: Use recursive character splitting with a 512-token target chunk size and 50-token overlap. For structured content (tables, code), use semantic chunking that respects element boundaries. Smaller chunks improve retrieval precision but increase index size; 512 tokens is a common sweet spot for factual Q&A. Store the parent document ID with each chunk for citation assembly.\n\nEmbedding: Use a multilingual sentence-transformers model (e.g., intfloat/multilingual-e5-large) to handle multilingual queries. Encode chunks in batches on GPU. On document update, re-encode only affected chunks and upsert them into the vector store.\n\nVector DB: Use Weaviate or pgvector (for existing Postgres infra). Index with HNSW for sub-millisecond ANN search. Store metadata fields as filterable properties to support date-range and source filters. For 500K documents at ~5 chunks each = 2.5M vectors at 1024 dims — easily handled by most vector stores.\n\nRetrieval + Reranking: Hybrid search: run dense ANN retrieval (top-50) in parallel with sparse BM25 keyword search (top-50), then merge and deduplicate. Pass the ~50 candidates through a cross-encoder reranker (e.g., cross-encoder/ms-marco-MiniLM-L-6-v2) to produce a final top-5 to top-10 context set. The cross-encoder is slower but dramatically improves precision by scoring query-chunk pairs jointly.\n\nGeneration: Assemble the top-k chunks into a context window with source markers. Use a structured prompt: 'Answer based only on the provided context. For each claim, cite the source using [Source N] notation. If the answer cannot be found in the context, say so explicitly.' This grounds the LLM output and enables hallucination detection (if the model cites a source that doesn't support the claim). Return inline citations with document ID, title, and page number.\n\nFailure Modes: Out-of-domain: if top retrieval scores are below a threshold, return a 'not found in knowledge base' response rather than hallucinating. Stale documents: TTL metadata triggers re-ingestion. Query routing: a lightweight classifier determines if a query is factual (route to RAG) vs. conversational (route to standard LLM).",
+    keyPoints: [
+      "Chunking strategy directly impacts retrieval quality — semantic chunking outperforms fixed-size for structured documents",
+      "Hybrid search (dense + sparse) consistently outperforms either alone, especially for keyword-heavy queries",
+      "Reranking with a cross-encoder is the highest-ROI improvement over naive top-k retrieval",
+      "Citations require storing chunk-to-document mappings at ingestion time, not as an afterthought",
+      "Thresholding retrieval scores allows the system to abstain rather than hallucinate",
+      "Multilingual support requires an embedding model trained on multilingual data, not just English",
+    ],
+  },
+  {
+    id: "msd-010",
+    type: "open-ended",
+    category: "ml-system-design",
+    categoryLabel: "ML System Design",
+    difficulty: "stretch",
+    title: "Inference Batching System Design",
+    tags: ["inference", "batching", "gpu", "scheduling", "llm-serving"],
+    question:
+      "Design a batching and scheduling system for LLM inference at scale. Cover continuous batching, dynamic batch sizing, SLA-aware priority queuing, and GPU memory management. This is Anthropic's most commonly asked ML systems design question.",
+    context:
+      "You are designing the inference serving layer for a large language model (70B parameters). The system must handle thousands of concurrent requests with varying prompt lengths and generation lengths. You have a fleet of 8xH100 nodes. P50 latency target is 500ms for the first token (TTFT) and 50ms per output token (TBT) for interactive tier; background tier can tolerate 10s TTFT.",
+    rubric: [
+      "Continuous Batching: Explains how continuous (iteration-level) batching differs from static batching, and why it dramatically improves GPU utilization for variable-length sequences",
+      "Dynamic Batch Sizing: Describes how to size batches based on available KV cache memory rather than a fixed batch size parameter",
+      "KV Cache Management: Discusses KV cache allocation per sequence, preemption and swapping strategies, and PagedAttention (vLLM's block-based KV cache)",
+      "Priority Queuing: Designs a queue with at least two tiers (interactive and background), describes how to implement SLA-aware scheduling (earliest deadline first, etc.)",
+      "GPU Memory Budget: Shows how to estimate total KV cache capacity given model size, and how to maximize it",
+      "Prefill vs Decode Disaggregation: Discusses separating prefill (compute-bound) and decode (memory-bandwidth-bound) phases onto different hardware or batches",
+      "Metrics and Autoscaling: Defines the key serving metrics (TTFT, TBT, throughput, GPU utilization) and how to autoscale the fleet",
+    ],
+    sampleAnswer:
+      "Core Problem: Static batching wastes GPU cycles because sequences finish at different times, leaving slots idle until the whole batch completes. The solution is continuous batching.\n\nContinuous Batching: At every decode iteration, the scheduler can add new sequences to empty slots from completed sequences. This keeps the GPU batch full at all times. The batch size varies dynamically between iterations. The key scheduler decision is: which sequences to add/remove at each step.\n\nKV Cache Management with PagedAttention: Traditional KV cache pre-allocates a contiguous block per sequence of size max_seq_len, which wastes memory for shorter sequences. PagedAttention (vLLM) manages KV cache in fixed-size pages (blocks) like OS virtual memory. Each sequence gets pages allocated on-demand; pages from completed sequences are immediately reclaimed. This reduces KV cache fragmentation dramatically and allows more sequences to run concurrently.\n\nDynamic Batch Sizing: Instead of a fixed batch size, maintain a target KV cache utilization (e.g., 90%). At each scheduling step, compute available KV cache pages and admit new sequences until pages are exhausted. When memory pressure is high, use preemption: swap the KV cache of low-priority sequences to CPU RAM or recompute prefill (restart the sequence) to free GPU memory for higher-priority requests.\n\nPriority Queuing: Maintain two queues — interactive (SLA: 500ms TTFT) and background (SLA: 10s TTFT). Schedule with Earliest Deadline First (EDF) within each tier. The interactive queue preempts background sequences when GPU memory is constrained. Assign deadlines at enqueue time: deadline = arrival_time + TTFT_SLA. For background workloads, use weighted fair queuing to prevent starvation.\n\nPrefill-Decode Disaggregation: Prefill (processing the full prompt) is compute-bound (matrix multiplications over long sequences). Decode (generating one token at a time) is memory-bandwidth-bound (loading all model weights for each token). Disaggregating these onto separate GPU pools allows each to be optimized independently. Prefill nodes can use chunked prefill to interleave with decode and reduce TTFT spikes.\n\nGPU Memory Budget: For a 70B BF16 model: weights = 140GB (2 bytes/param). With 8×80GB H100s = 640GB total. After model weights: 500GB free. KV cache per token per layer: 2 (K+V) × num_heads × head_dim × bytes = 2 × 64 × 128 × 2 = 32KB per layer, × 80 layers = 2.56MB per token. With 500GB free: ~195K tokens of KV cache capacity. At avg sequence length 2K tokens, that supports ~97 concurrent sequences.\n\nMetrics and Autoscaling: Track TTFT p50/p99, TBT p50/p99, throughput (tokens/sec), GPU memory utilization, queue depth per tier. Autoscale by provisioning additional inference nodes when queue depth for interactive tier exceeds a threshold or TTFT p95 > 400ms.",
+    keyPoints: [
+      "Continuous batching is the single most important optimization for LLM serving throughput",
+      "PagedAttention eliminates KV cache fragmentation and enables near-optimal GPU memory utilization",
+      "Dynamic batch sizing based on KV cache pages outperforms fixed batch sizes by 2-4x",
+      "Prefill-decode disaggregation allows independent optimization of compute-bound and memory-bandwidth-bound phases",
+      "Priority queuing with preemption is required to serve mixed interactive + background workloads on shared hardware",
+      "TTFT and TBT are the two primary user-facing latency metrics; they require different optimizations",
+      "KV cache capacity (not GPU compute) is typically the binding constraint for concurrent sequence count",
+    ],
+  },
+  {
+    id: "msd-011",
+    type: "open-ended",
+    category: "ml-system-design",
+    categoryLabel: "ML System Design",
+    difficulty: "standard",
+    title: "LLM Evaluation Framework Design",
+    tags: ["evaluation", "metrics", "a-b-testing", "llm-quality"],
+    question:
+      "Design a comprehensive evaluation framework for a large language model. Cover automated metrics (perplexity, BLEU, ROUGE, etc.), human evaluation pipelines, A/B testing, regression detection, and safety checks. The framework should support both pre-deployment evaluation and continuous post-deployment monitoring.",
+    context:
+      "Your team ships a general-purpose LLM assistant. The model is fine-tuned and updated frequently. You need an eval framework that catches quality regressions before deployment, measures real-world user satisfaction, and detects safety issues continuously.",
+    rubric: [
+      "Automated Metrics: Lists appropriate metrics per task type (perplexity for LM quality, ROUGE/BLEU for summarization/translation, exact match for QA, win-rate for generation quality)",
+      "LLM-as-Judge: Describes using a strong LLM to score outputs on quality dimensions (helpfulness, coherence, groundedness, safety) as a scalable alternative to human eval",
+      "Human Evaluation Pipeline: Describes how to collect high-quality human preference labels at scale (crowdsourcing platform, annotator training, quality control, inter-rater reliability)",
+      "A/B Testing: Explains how to run statistically valid online experiments comparing model versions, including power analysis, randomization, and guardrail metrics",
+      "Regression Detection: Proposes a mechanism to automatically flag regressions on a golden benchmark set before deployment",
+      "Safety Evaluation: Covers adversarial probing, harm category benchmarks, and policy compliance checks",
+      "Infrastructure: Describes the data pipelines, storage, dashboards, and alerting needed to operationalize the framework",
+    ],
+    sampleAnswer:
+      "Automated Metrics by Task: Perplexity on held-out data as a general LM health signal. ROUGE-L and BERTScore for summarization. BLEU/COMET for translation. Exact match and F1 for extractive QA. For open-ended generation, automated metrics are insufficient alone — use LLM-as-judge.\n\nLLM-as-Judge: Use a strong judge model (e.g., GPT-4) to evaluate outputs on a 5-point scale across dimensions: helpfulness, factual accuracy, coherence, conciseness, and safety. Run the judge on 1,000-5,000 examples per eval cycle. Validate the judge periodically against human labels for calibration. LLM judges are ~0.8-0.9 correlated with human preference at scale with much lower cost.\n\nHuman Evaluation Pipeline: Use a crowdsourcing platform (Scale AI, Surge) with trained annotators. For preference evaluation, show annotators two model outputs side-by-side (blinded) and ask which is better on each dimension. Compute inter-annotator agreement (Cohen's kappa). Annotators with kappa < 0.6 are retrained or replaced. Use majority vote across 3 annotators per example. Collect ~500-2,000 human preferences per model update for statistically significant win-rate estimates.\n\nA/B Testing: Run online experiments where N% of traffic receives the new model (treatment) and the remaining receives the incumbent (control). Randomize at the user level to avoid session contamination. Primary metric: explicit thumbs up/down rate and implicit satisfaction signals (session length, retry rate). Guardrail metrics: safety violation rate, latency. Use a sequential testing procedure (e.g., mSPRT) to allow early stopping without inflating Type I error. Minimum detectable effect: 1% win-rate with 80% power requires ~20K users per arm.\n\nRegression Detection: Maintain a golden benchmark suite of ~10K examples with known-good reference outputs. Before every deployment, run the new model on the full suite. Block deployment if win-rate vs. reference drops by more than 2% on any category or if any safety benchmark degrades. Track the time-series of each benchmark metric to detect gradual drift.\n\nSafety Evaluation: Run a dedicated safety eval suite covering harm categories (violence, CSAM, self-harm, PII, jailbreaks). Use automated safety classifiers to score model outputs. Run adversarial probing with red-team prompts generated by an attacker LLM. Any regression in safety benchmarks blocks deployment regardless of quality improvements.\n\nInfrastructure: A centralized eval service accepts model endpoints and benchmark IDs, runs evaluations in parallel, and stores results in a time-series database. A dashboard tracks all metrics over time with regression alerts. Results are linked to the model registry so every model version has a full eval report.",
+    keyPoints: [
+      "No single metric captures LLM quality — use a multi-dimensional eval suite",
+      "LLM-as-judge scales human-quality evaluation at machine cost for most quality dimensions",
+      "A/B testing requires proper randomization, sufficient power, and guardrail metrics to prevent gaming",
+      "A golden benchmark suite is the primary regression gate before deployment",
+      "Safety eval must be a hard gate — it cannot be outweighed by quality improvements",
+      "Human and automated evals are complementary: automated evals are cheap and fast; human evals are the ground truth",
+    ],
+  },
+  {
+    id: "msd-012",
+    type: "open-ended",
+    category: "ml-system-design",
+    categoryLabel: "ML System Design",
+    difficulty: "standard",
+    title: "Real-Time Feature Store Design",
+    tags: ["feature-store", "real-time", "batch", "ml-infrastructure"],
+    question:
+      "Design a feature store that supports both batch-computed and real-time features, online and offline serving, feature versioning, and historical backfill. The store must serve features at low latency (<10ms p99) for online inference while also providing point-in-time correct features for training data generation.",
+    context:
+      "Your company runs multiple ML models (fraud detection, recommendations, churn prediction) each needing different feature freshness requirements: fraud needs sub-second features, recommendations need hourly, and churn can tolerate daily. The feature store must serve all three use cases from a single system.",
+    rubric: [
+      "Dual Store Architecture: Describes separate online store (low latency, KV) and offline store (columnar, point-in-time correct) with a sync layer between them",
+      "Batch Feature Pipeline: Describes how batch features (computed daily/hourly in Spark or SQL) are written to both stores",
+      "Real-Time Feature Pipeline: Describes streaming computation (Kafka + Flink/Spark Streaming) for sub-second features written to the online store",
+      "Online Serving: Describes the online serving path: feature lookup by entity ID from a low-latency KV store (Redis/DynamoDB), feature joining, and serving",
+      "Offline Serving: Describes point-in-time correct feature retrieval for training (merge_asof join, preventing data leakage)",
+      "Feature Versioning: Explains how to version feature definitions, handle schema evolution, and maintain backward compatibility",
+      "Backfill: Describes how to backfill historical feature values when a new feature is added, and the challenge of event-time correctness during backfill",
+    ],
+    sampleAnswer:
+      "Architecture: The feature store has three planes — (1) a compute plane that produces features, (2) an online store for low-latency serving, and (3) an offline store for training data generation.\n\nOnline Store: Redis Cluster (or DynamoDB) stores the latest feature values per entity as a hash map: {entity_id -> {feature_name: value, computed_at: timestamp}}. Lookups are O(1) with p99 < 5ms. Features expire via TTL based on their freshness requirement (fraud: 1 minute, recommendations: 2 hours, churn: 25 hours).\n\nOffline Store: An Apache Iceberg or Delta Lake table partitioned by entity and date. Each row stores {entity_id, feature_name, value, event_ts, created_at}. This enables point-in-time joins: to retrieve features as they existed at a given timestamp, use a merge_asof join on event_ts — the standard technique for training data generation without leakage.\n\nBatch Feature Pipeline: Scheduled Spark or dbt jobs compute aggregate features (e.g., 7-day purchase count) from the data warehouse. Results are written to both the offline store (for historical queries) and the online store (for live serving). A dual-write SDK ensures consistency.\n\nReal-Time Feature Pipeline: A Kafka stream captures raw events (clicks, transactions). A Flink streaming job computes window aggregations (e.g., events in last 5 minutes per user) and writes results to Redis with a short TTL. Real-time features are also written to the offline store with event timestamps for training reproducibility.\n\nFeature Versioning: Feature definitions are stored in a central registry (YAML schemas with semantic versioning). Breaking changes (type changes, aggregation window changes) require a new feature name. Non-breaking changes (description, TTL) are in-place updates. The registry enforces version compatibility checks before deployment. All feature reads include the feature version to detect staleness.\n\nBackfill: When a new feature is added, a backfill job replays historical events to compute the feature at all past timestamps. Backfill uses event-time processing (not processing-time) to ensure correctness. Until backfill is complete, the feature is marked as 'partial' in the registry and training jobs exclude it or use a fallback value.\n\nServing Path: Online: the model inference service calls the feature store SDK with a list of (entity_id, feature_names). The SDK batch-fetches from Redis and applies any missing-value defaults. Latency budget: <5ms for 20 features. Training: the training pipeline calls a point-in-time join API with a spine (entity_id, label_ts) and receives a feature DataFrame with no leakage guarantees.",
+    keyPoints: [
+      "Dual-store architecture (online KV store + offline columnar store) is the industry standard (Feast, Tecton, Hopsworks all use this pattern)",
+      "Online and offline stores must be kept in sync — write-through on every feature update",
+      "Real-time features require a streaming compute layer (Kafka + Flink); batch features use Spark/dbt",
+      "Point-in-time joins on the offline store prevent training/serving skew and data leakage",
+      "Feature versioning with a central registry is required to manage schema evolution across models",
+      "Backfill must use event-time semantics, not processing time, to maintain historical correctness",
+      "TTL-based expiry in the online store enforces freshness requirements without manual cleanup",
     ],
   },
 ];

@@ -1,18 +1,24 @@
 import csFundamentals from "./cs-fundamentals";
+import numpyFundamentals from "./numpy-fundamentals";
+import pytorchBasics from "./pytorch-basics";
 import mlTheory from "./ml-theory";
 import deepLearningLlms from "./deep-learning-llms";
 import mlEngineering from "./ml-engineering";
 import mlSystemDesign from "./ml-system-design";
 import pytorchCoding from "./pytorch-coding";
+import agentsToolUse from "./agents-tool-use";
 import safetyAlignment from "./safety-alignment";
 
 const allQuestions = [
-  ...pytorchCoding,
   ...csFundamentals,
+  ...numpyFundamentals,
+  ...pytorchBasics,
   ...mlTheory,
   ...deepLearningLlms,
   ...mlEngineering,
   ...mlSystemDesign,
+  ...pytorchCoding,
+  ...agentsToolUse,
   ...safetyAlignment,
 ];
 

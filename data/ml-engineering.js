@@ -5,7 +5,7 @@ const mlEngineering = [
     type: "coding",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Evaluation Harness",
     tags: ["evaluation", "metrics", "inference", "reporting"],
     question:
@@ -191,7 +191,7 @@ def evaluate(
     type: "coding",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Feature Store Point-in-Time Join",
     tags: ["feature-store", "temporal-join", "data-leakage", "pandas"],
     question:
@@ -314,19 +314,19 @@ def validate_no_leakage(
     type: "knowledge",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Core",
+    difficulty: "core",
     title: "Experiment Tracking Components",
     tags: ["experiment-tracking", "mlops", "reproducibility"],
     question:
       "Which of the following is NOT typically a core component of an experiment tracking system?",
     format: "multiple-choice",
     options: [
-      "Hyperparameter logging",
-      "Metric visualization over training steps",
-      "Automatic GPU cluster provisioning",
-      "Artifact versioning (model checkpoints, datasets)",
+      { id: "A", text: "Hyperparameter logging" },
+      { id: "B", text: "Metric visualization over training steps" },
+      { id: "C", text: "Automatic GPU cluster provisioning" },
+      { id: "D", text: "Artifact versioning (model checkpoints, datasets)" },
     ],
-    correctAnswer: "Automatic GPU cluster provisioning",
+    correctAnswer: "C",
     explanation:
       "Experiment tracking systems (e.g., MLflow, Weights & Biases, Neptune) focus on recording what happened during a run: hyperparameters, metrics over time, and artifacts like checkpoints and datasets. Automatic GPU cluster provisioning is an infrastructure/orchestration concern handled by tools like Kubernetes, Ray, or cloud-specific services -- not the experiment tracker itself. While some platforms bundle both, provisioning is not a core tracking component.",
   },
@@ -335,7 +335,7 @@ def validate_no_leakage(
     type: "knowledge",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Data Pipeline Idempotency",
     tags: ["data-pipelines", "idempotency", "etl", "reliability"],
     question:
@@ -351,7 +351,7 @@ def validate_no_leakage(
     type: "knowledge",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Model Deployment Rollback Debugging",
     tags: ["deployment", "rollback", "debugging", "monitoring"],
     question:
@@ -369,7 +369,7 @@ def validate_no_leakage(
     type: "open-ended",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "Training Data Pipeline with Leak Prevention",
     tags: ["data-pipeline", "data-leakage", "train-test-split", "feature-engineering"],
     question:
@@ -398,7 +398,7 @@ def validate_no_leakage(
     type: "open-ended",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Stretch",
+    difficulty: "stretch",
     title: "Train-Register-Deploy Pipeline",
     tags: ["mlops", "ci-cd", "model-registry", "deployment", "pipeline"],
     question:
@@ -429,7 +429,7 @@ def validate_no_leakage(
     type: "open-ended",
     category: "ml-engineering",
     categoryLabel: "ML Engineering",
-    difficulty: "Standard",
+    difficulty: "standard",
     title: "CTR Drop Incident Response",
     tags: ["debugging", "production", "monitoring", "incident-response", "ctr"],
     question:
@@ -452,6 +452,311 @@ def validate_no_leakage(
       "Immediate mitigation (rollback, feature fallback) takes priority over root-cause analysis",
       "Long-term prevention requires feature monitoring, freshness checks, and integration tests",
     ],
+  },
+  {
+    id: "mle-009",
+    type: "coding",
+    category: "ml-engineering",
+    categoryLabel: "ML Engineering",
+    difficulty: "standard",
+    title: "SQL for ML Feature Extraction",
+    tags: ["sql", "feature-engineering", "window-functions"],
+    question:
+      "Write SQL queries to compute ML features from a user events table. Implement: (1) a window function query that computes per-user session metrics (session count, avg session duration, pages per session) over the last 30 days, (2) an aggregation query that computes purchase behavior features (purchase count, total spend, avg order value, days since last purchase), and (3) a join query that combines behavioral signals from multiple tables (events, orders, user_profile) into a single feature row per user.",
+    hint: "Use LAG/LEAD for session boundary detection. A session gap is typically defined as >30 minutes between events. Use CASE WHEN inside aggregations for conditional counts. CTE chaining keeps complex queries readable.",
+    starterCode: `-- Events table schema:
+-- user_events(user_id, event_type, page_url, event_ts)
+-- orders(user_id, order_id, amount, created_at)
+-- user_profile(user_id, signup_date, country, plan_tier)
+
+-- Query 1: Session metrics using window functions
+-- A new session starts when the gap from the previous event is > 30 minutes.
+-- Compute: session_count, avg_session_duration_seconds, avg_pages_per_session
+-- for the last 30 days, one row per user.
+
+-- TODO: Write Query 1 here
+
+
+-- Query 2: Purchase behavior aggregations
+-- Compute: purchase_count, total_spend, avg_order_value, days_since_last_purchase
+-- for the last 90 days, one row per user.
+
+-- TODO: Write Query 2 here
+
+
+-- Query 3: Combined feature join
+-- Join sessions (Query 1), purchase (Query 2), and user_profile
+-- to produce one feature row per user.
+
+-- TODO: Write Query 3 here
+`,
+    solution: `-- Query 1: Session metrics
+WITH event_gaps AS (
+  SELECT
+    user_id,
+    event_ts,
+    LAG(event_ts) OVER (PARTITION BY user_id ORDER BY event_ts) AS prev_event_ts
+  FROM user_events
+  WHERE event_ts >= NOW() - INTERVAL '30 days'
+),
+session_starts AS (
+  SELECT
+    user_id,
+    event_ts,
+    CASE
+      WHEN prev_event_ts IS NULL
+        OR EXTRACT(EPOCH FROM (event_ts - prev_event_ts)) > 1800 THEN 1
+      ELSE 0
+    END AS is_session_start
+  FROM event_gaps
+),
+session_ids AS (
+  SELECT
+    user_id,
+    event_ts,
+    SUM(is_session_start) OVER (PARTITION BY user_id ORDER BY event_ts) AS session_id
+  FROM session_starts
+),
+session_stats AS (
+  SELECT
+    user_id,
+    session_id,
+    COUNT(*) AS pages_in_session,
+    EXTRACT(EPOCH FROM (MAX(event_ts) - MIN(event_ts))) AS session_duration_sec
+  FROM session_ids
+  GROUP BY user_id, session_id
+)
+SELECT
+  user_id,
+  COUNT(*)                          AS session_count,
+  AVG(session_duration_sec)         AS avg_session_duration_seconds,
+  AVG(pages_in_session)             AS avg_pages_per_session
+FROM session_stats
+GROUP BY user_id;
+
+
+-- Query 2: Purchase behavior aggregations
+SELECT
+  user_id,
+  COUNT(order_id)                                          AS purchase_count,
+  COALESCE(SUM(amount), 0)                                 AS total_spend,
+  COALESCE(AVG(amount), 0)                                 AS avg_order_value,
+  EXTRACT(DAY FROM (NOW() - MAX(created_at)))              AS days_since_last_purchase
+FROM orders
+WHERE created_at >= NOW() - INTERVAL '90 days'
+GROUP BY user_id;
+
+
+-- Query 3: Combined feature join
+WITH session_features AS (
+  -- ... (Query 1 CTE chain here, aliased as session_features)
+  SELECT user_id, session_count, avg_session_duration_seconds, avg_pages_per_session
+  FROM session_stats_result  -- assume Query 1 result materialized
+),
+purchase_features AS (
+  SELECT
+    user_id,
+    COUNT(order_id)                                     AS purchase_count,
+    COALESCE(SUM(amount), 0)                            AS total_spend,
+    COALESCE(AVG(amount), 0)                            AS avg_order_value,
+    EXTRACT(DAY FROM (NOW() - MAX(created_at)))         AS days_since_last_purchase
+  FROM orders
+  WHERE created_at >= NOW() - INTERVAL '90 days'
+  GROUP BY user_id
+)
+SELECT
+  p.user_id,
+  p.signup_date,
+  p.country,
+  p.plan_tier,
+  COALESCE(s.session_count, 0)                AS session_count,
+  COALESCE(s.avg_session_duration_seconds, 0) AS avg_session_duration_seconds,
+  COALESCE(s.avg_pages_per_session, 0)        AS avg_pages_per_session,
+  COALESCE(f.purchase_count, 0)               AS purchase_count,
+  COALESCE(f.total_spend, 0)                  AS total_spend,
+  COALESCE(f.avg_order_value, 0)              AS avg_order_value,
+  f.days_since_last_purchase
+FROM user_profile p
+LEFT JOIN session_features s ON p.user_id = s.user_id
+LEFT JOIN purchase_features f ON p.user_id = f.user_id;
+`,
+    explanation:
+      "Window functions are essential for session detection because each event's session membership depends on the gap from its predecessor. The LAG pattern assigns session IDs without expensive self-joins. Aggregate features are straightforward but require COALESCE to handle users with no events/orders (NULL from LEFT JOIN becomes 0). The final LEFT JOIN from user_profile ensures all users appear in the output even with no behavioral history, which is critical for cold-start users in ML pipelines.",
+    testCases: [
+      {
+        input: "User with events at 10:00, 10:15, 10:45, 11:30 (30-min gap threshold)",
+        expected: "2 sessions: session 1 = events at 10:00 and 10:15, session 2 = events at 10:45 and 11:30",
+      },
+      {
+        input: "User with no orders in the last 90 days",
+        expected: "purchase_count=0, total_spend=0, avg_order_value=0, days_since_last_purchase=NULL",
+      },
+      {
+        input: "User in user_profile with no rows in user_events or orders",
+        expected: "Row appears in Query 3 output with all behavioral features as 0 (COALESCE handles NULLs)",
+      },
+    ],
+    timeComplexity: "O(n log n) for window functions due to sorting by user_id and event_ts",
+    spaceComplexity: "O(n) for intermediate CTE materializations",
+  },
+  {
+    id: "mle-010",
+    type: "coding",
+    category: "ml-engineering",
+    categoryLabel: "ML Engineering",
+    difficulty: "stretch",
+    title: "Production Python Async Inference Server",
+    tags: ["fastapi", "async", "batching", "production"],
+    question:
+      "Implement an async FastAPI inference endpoint that collects incoming requests into dynamic batches and processes them together. Individual requests should wait up to `max_wait_ms` milliseconds for the batch to fill. Once the batch reaches `max_batch_size` OR the wait timeout expires, the batch is forwarded to the model for inference and each waiting request receives its individual result. Use asyncio primitives to coordinate the batching without busy-waiting.",
+    hint: "Use an asyncio.Queue to collect requests. A background coroutine drains the queue when batch_size is met or a timeout fires. Each request should carry an asyncio.Future so the background task can set its result when inference completes. Use asyncio.wait_for with a timeout to implement max_wait_ms.",
+    starterCode: `import asyncio
+from dataclasses import dataclass, field
+from typing import Any
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+MAX_BATCH_SIZE = 32
+MAX_WAIT_MS = 20
+
+
+class InferenceRequest(BaseModel):
+    inputs: list[float]
+
+
+@dataclass
+class PendingRequest:
+    inputs: list[float]
+    future: asyncio.Future = field(default_factory=asyncio.get_event_loop().create_future)
+
+
+# TODO: Create a module-level queue and start a background batching task
+
+async def model_inference(batch_inputs: list[list[float]]) -> list[Any]:
+    """Simulate model inference. Replace with real model call."""
+    # TODO: implement (for now, return sum of each input vector as a placeholder)
+    pass
+
+
+async def batch_processor():
+    """Background task: collect requests and process them in batches."""
+    # TODO: implement batching loop
+    pass
+
+
+@app.post("/predict")
+async def predict(request: InferenceRequest):
+    """Accept a single inference request, join the next batch, and return the result."""
+    # TODO: enqueue the request, await its future, return the result
+    pass
+
+
+@app.on_event("startup")
+async def startup():
+    # TODO: start the batch_processor background task
+    pass
+`,
+    solution: `import asyncio
+from dataclasses import dataclass, field
+from typing import Any
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+MAX_BATCH_SIZE = 32
+MAX_WAIT_MS = 20
+
+request_queue: asyncio.Queue = asyncio.Queue()
+
+
+class InferenceRequest(BaseModel):
+    inputs: list[float]
+
+
+@dataclass
+class PendingRequest:
+    inputs: list[float]
+    future: asyncio.Future
+
+
+async def model_inference(batch_inputs: list[list[float]]) -> list[Any]:
+    """Simulate model inference — replace with real model forward pass."""
+    await asyncio.sleep(0.001)  # simulate GPU latency
+    return [sum(inputs) for inputs in batch_inputs]
+
+
+async def batch_processor():
+    """
+    Background task: accumulate requests up to MAX_BATCH_SIZE or MAX_WAIT_MS,
+    then run inference and resolve each request's future.
+    """
+    while True:
+        pending: list[PendingRequest] = []
+
+        # Block until at least one request arrives
+        first = await request_queue.get()
+        pending.append(first)
+
+        # Drain the queue up to MAX_BATCH_SIZE with a timeout
+        deadline = asyncio.get_event_loop().time() + MAX_WAIT_MS / 1000.0
+        while len(pending) < MAX_BATCH_SIZE:
+            remaining = deadline - asyncio.get_event_loop().time()
+            if remaining <= 0:
+                break
+            try:
+                item = await asyncio.wait_for(request_queue.get(), timeout=remaining)
+                pending.append(item)
+            except asyncio.TimeoutError:
+                break
+
+        # Run inference on the collected batch
+        batch_inputs = [req.inputs for req in pending]
+        try:
+            results = await model_inference(batch_inputs)
+            for req, result in zip(pending, results):
+                if not req.future.done():
+                    req.future.set_result(result)
+        except Exception as exc:
+            for req in pending:
+                if not req.future.done():
+                    req.future.set_exception(exc)
+
+
+@app.post("/predict")
+async def predict(request: InferenceRequest):
+    loop = asyncio.get_event_loop()
+    future: asyncio.Future = loop.create_future()
+    pending = PendingRequest(inputs=request.inputs, future=future)
+    await request_queue.put(pending)
+    result = await future
+    return {"result": result}
+
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(batch_processor())
+`,
+    explanation:
+      "Continuous batching is the key technique behind high-throughput ML inference servers (vLLM, TGI, Triton). The pattern: (1) each HTTP request deposits a PendingRequest with an asyncio.Future into a shared queue and then awaits that future, (2) a single background coroutine drains the queue using a timed wait — it blocks on the first item, then collects more items until either the batch is full or the deadline passes, (3) the background task runs inference on the full batch and resolves each future with the corresponding output. This gives near-optimal GPU utilization without requiring callers to manually batch their requests. The Future-based handoff avoids polling and keeps each request coroutine suspended (not consuming CPU) while waiting.",
+    testCases: [
+      {
+        input: "32 concurrent POST /predict requests with identical inputs [1.0, 2.0, 3.0]",
+        expected: "All 32 requests processed in a single inference call; each returns {result: 6.0}",
+      },
+      {
+        input: "Single request with no other concurrent traffic",
+        expected: "Request completes after max_wait_ms timeout; returns correct result",
+      },
+      {
+        input: "20 requests arrive, then 15 more arrive 10ms later (max_wait_ms=20)",
+        expected: "First 20 processed together after timeout; second 15 form their own batch",
+      },
+    ],
+    timeComplexity: "O(B) per batch where B is batch size; individual request latency O(max_wait_ms + inference_time)",
+    spaceComplexity: "O(B) for pending requests in the queue and batch buffer",
   },
 ];
 
