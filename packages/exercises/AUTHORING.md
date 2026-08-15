@@ -86,11 +86,18 @@ docs (zod.dev, orm.drizzle.team, react-typescript-cheatsheet.netlify.app).
 
 ## Verifying your work
 
-From `packages/exercises`:
+From `packages/exercises`. Note that vitest's positional filters are
+**substring matches, not regex** — use shell globs to select files:
 
 ```bash
-pnpm exec vitest run --typecheck <path-to-day-folder>            # problems: must FAIL
-pnpm exec vitest run --typecheck '<day-folder>.*solution'        # solutions: must PASS
+# problems for one day: must FAIL (for the intended, lesson-shaped reason)
+pnpm exec vitest run --typecheck week-03-generics/day-01-*/*.problem.ts
+
+# solutions for one day: must PASS
+pnpm exec vitest run --typecheck week-03-generics/day-01-*/*.solution.ts
+
+# every solution in the package: must PASS
+pnpm test:solutions
 ```
 
 A day is done only when every solution passes and every problem fails for the
