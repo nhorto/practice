@@ -14,7 +14,7 @@ See [CURRICULUM.md](./CURRICULUM.md) for the full map.
 | Path | What it is |
 |------|-----------|
 | [`CURRICULUM.md`](./CURRICULUM.md) | The 8-week, day-by-day plan |
-| [`packages/exercises/`](./packages/exercises) | ~40 daily sessions of test-driven type drills (the core) |
+| [`packages/exercises/`](./packages/exercises) | 40 daily sessions · 144 test-driven type drills (the core) |
 | [`projects/`](./projects) | 6 guided projects, from a CLI task tracker to a full-stack AI app |
 | [`apps/web/`](./apps/web) | Dashboard (progress tracking) + in-browser Monaco playground |
 | [`archive/`](./archive) | The old AI-interview practice app this repo used to be |
