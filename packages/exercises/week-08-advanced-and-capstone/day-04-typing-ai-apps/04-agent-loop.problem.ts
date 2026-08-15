@@ -33,8 +33,11 @@ const runAgent = (model, tools, maxTurns = 5) => {
       case "reply":
         return output.text;
       case "call_tool": {
-        const result = tools[output.tool](output.input);
-        transcript.push(`[${output.tool}] ${result}`);
+        const tool = tools[output.tool];
+        if (!tool) {
+          throw new Error(`Unknown tool: ${output.tool}`);
+        }
+        transcript.push(`[${output.tool}] ${tool(output.input)}`);
         break;
       }
       default:

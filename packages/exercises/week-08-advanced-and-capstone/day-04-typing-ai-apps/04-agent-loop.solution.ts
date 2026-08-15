@@ -12,9 +12,11 @@
  *   REJECTS any turn naming an unregistered tool at compile time — the
  *   `@ts-expect-error` in the last test is a runtime crash that the types
  *   catch a whole deploy earlier.
- * - `tools[output.tool]` is safe WITHOUT noUncheckedIndexedAccess widening
- *   because `output.tool` is typed `keyof TTools & string` — a key that
- *   provably exists.
+ * - `tools[output.tool]` still comes back `... | undefined`: TTools is
+ *   constrained by an INDEX SIGNATURE, so `noUncheckedIndexedAccess` applies.
+ *   The honest guard costs two lines and doubles as runtime protection when
+ *   an untyped caller (or a cast) smuggles in a bad tool name — which is
+ *   exactly what the last test does.
  * - The switch on `output.kind` is the same exhaustive dispatch as exercise
  *   01: add a third turn kind and `assertNever` turns into a compile error.
  *
@@ -44,8 +46,11 @@ const runAgent = <TTools extends Record<string, (input: string) => string>>(
       case "reply":
         return output.text;
       case "call_tool": {
-        const result = tools[output.tool](output.input);
-        transcript.push(`[${output.tool}] ${result}`);
+        const tool = tools[output.tool];
+        if (!tool) {
+          throw new Error(`Unknown tool: ${output.tool}`);
+        }
+        transcript.push(`[${output.tool}] ${tool(output.input)}`);
         break;
       }
       default:
