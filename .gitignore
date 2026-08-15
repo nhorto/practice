@@ -19,6 +19,10 @@ build/
 *.db-journal
 *.sqlite
 
+# monaco bundle, synced from node_modules by apps/web/scripts/sync-monaco.mjs
+apps/web/public/vs/
+apps/web/public/vs.version
+
 # misc
 .DS_Store
 *.pem

@@ -12,6 +12,27 @@ import {
 
 const STORAGE_KEY = "ts-dojo:progress:v1";
 
+/**
+ * Titles carry inline code spans in backticks (`as const`, `keyof`, ...).
+ * Render the odd-indexed segments — the ones between backticks — as <code>.
+ */
+const RichTitle = ({ text }: { text: string }) => (
+  <>
+    {text.split("`").map((segment, index) =>
+      index % 2 === 1 ? (
+        <code
+          key={index}
+          className="rounded bg-zinc-800/80 px-1 py-0.5 font-mono text-[0.9em] text-sky-300"
+        >
+          {segment}
+        </code>
+      ) : (
+        <span key={index}>{segment}</span>
+      ),
+    )}
+  </>
+);
+
 type Progress = ReadonlySet<DaySlug>;
 
 const readProgress = (): Progress => {
@@ -155,7 +176,7 @@ export function Dashboard() {
                   W{week.code}
                 </span>
                 <span className="flex-1 text-sm font-medium text-zinc-100">
-                  {week.title}
+                  <RichTitle text={week.title} />
                 </span>
                 <span className="hidden text-xs tabular-nums text-zinc-500 sm:block">
                   {doneInWeek}/{week.days.length}
@@ -201,7 +222,7 @@ export function Dashboard() {
                               <span className="mr-2 font-mono text-xs text-zinc-500">
                                 d{day.day}
                               </span>
-                              {day.title}
+                              <RichTitle text={day.title} />
                             </span>
                             <span className="ml-2 text-xs text-zinc-500">
                               {day.reading}
@@ -219,7 +240,7 @@ export function Dashboard() {
                     <span className="font-medium uppercase tracking-wider text-zinc-500">
                       Project
                     </span>
-                    <span className="text-zinc-300">{week.project.name}</span>
+                    <span className="text-zinc-300"><RichTitle text={week.project.name} /></span>
                     <code className="font-mono text-zinc-500">{week.project.path}</code>
                     <span className="text-zinc-600">· {week.project.note}</span>
                   </p>

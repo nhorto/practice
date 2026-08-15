@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "sync-monaco": "node scripts/sync-monaco.mjs",
+    "predev": "pnpm sync-monaco",
     "dev": "next dev",
+    "prebuild": "pnpm sync-monaco",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit"
