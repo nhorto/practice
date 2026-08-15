@@ -1,23 +1,15 @@
 /**
- * Exercise 02 — Literal types
+ * Exercise 02 — Literal types (solution)
  *
- * A literal type is a single exact value used as a type: `"asc"` is a type
- * that only the string "asc" satisfies. Union a few together and you get an
- * enum-without-the-enum: `"asc" | "desc"`.
- *
- * Inference follows the same idea: `const method = "GET"` infers the literal
- * type `"GET"` (it can never change), but `let method = "GET"` widens to
- * `string` (it might be reassigned).
- *
- * 🎯 1. Replace `string` in the `Direction` alias with the two real options.
- *    2. Change `let` to `const` below so `defaultDirection` keeps its
- *       literal type.
+ * `"asc" | "desc"` makes the invalid call impossible to write, and the IDE
+ * now autocompletes the two valid options. `const` keeps the literal type
+ * `"asc"`; `let` would widen it to `string` because it could be reassigned.
  */
 import { expect, expectTypeOf, it } from "vitest";
 
-export type Direction = string;
+export type Direction = "asc" | "desc";
 
-let defaultDirection = "asc";
+const defaultDirection = "asc";
 
 const sortNumbers = (values: number[], direction: Direction) => {
   const sorted = [...values].sort((a, b) => a - b);
