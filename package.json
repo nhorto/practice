@@ -1,22 +1,16 @@
 {
-  "name": "ai-engineer-practice",
-  "version": "0.1.0",
+  "name": "typescript-dojo",
+  "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": ["better-sqlite3", "esbuild"]
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.2.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.0",
-    "tailwindcss": "^4"
+    "web": "pnpm --filter web dev",
+    "exercise": "pnpm --filter exercises exercise",
+    "test": "pnpm --filter exercises test",
+    "test:solutions": "pnpm --filter exercises test:solutions",
+    "typecheck": "pnpm -r typecheck"
   }
 }

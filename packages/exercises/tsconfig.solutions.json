@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "week-*/**/*.solution.ts",
+    "week-*/**/*.solution.tsx",
+    "scripts/**/*",
+    "vitest.config.ts"
+  ]
+}
