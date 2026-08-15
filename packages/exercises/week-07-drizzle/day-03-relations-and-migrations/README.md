@@ -80,6 +80,12 @@ pnpm exercise 07-03 2      # just exercise 02
   with its children is `Awaited<ReturnType<typeof query>>[number]` — never a
   hand-written interface that quietly drifts from the query.
 
+## Today's build (~30 min)
+
+**Project 05 — Full-stack notes** · [`projects/05-fullstack-notes`](../../../../projects/05-fullstack-notes/GUIDE.md)
+
+**Milestone 3** — relational queries in the data layer; start **milestone 4**.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

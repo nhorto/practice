@@ -48,6 +48,16 @@ pnpm exercise 02-01 2      # just exercise 02
   keys, all present."** Reach for `Record` whenever you can name the keys — the
   compiler then enforces completeness for free.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+Wrap up **milestone 2**, start **milestone 3** — JSON persistence with hand-rolled narrowing.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

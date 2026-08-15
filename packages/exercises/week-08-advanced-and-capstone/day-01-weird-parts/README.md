@@ -54,6 +54,10 @@ pnpm exercise 08-01 3      # just exercise 03
 - **Functions are compared by what callers can do with them**, not by matching
   signatures token-for-token. A callback that ignores arguments is always safe.
 
+## Today's build
+
+No project today — the capstone kicks off on **day 5**. Use spare time to finish any earlier project.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

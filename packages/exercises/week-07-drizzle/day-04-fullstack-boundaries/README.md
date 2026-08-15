@@ -68,6 +68,12 @@ pnpm exercise 07-04 3      # just exercise 03
   the narrowing. This is the same discriminated-union drill from week 2 —
   now guarding a database.
 
+## Today's build (~30 min)
+
+**Project 05 — Full-stack notes** · [`projects/05-fullstack-notes`](../../../../projects/05-fullstack-notes/GUIDE.md)
+
+**Milestone 4** — server actions validated with Zod (today's exact topic).
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

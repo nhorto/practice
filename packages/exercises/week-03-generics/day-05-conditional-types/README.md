@@ -47,6 +47,16 @@ pnpm exercise 03-05 4      # just exercise 04
   `A | B | C` runs once per member — that's the entire implementation of
   `Exclude`, `Extract`, and half the standard library.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 4** — finish the emitter; conditional types help with the handler signatures.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 That's the week — generics, generic types, overloads, guards, template

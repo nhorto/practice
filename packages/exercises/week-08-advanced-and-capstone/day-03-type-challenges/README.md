@@ -49,6 +49,10 @@ pnpm exercise 08-03 4      # just exercise 04
   `expectTypeOf` assertions — write the type, watch red turn green, exactly
   like the runtime loop you've used for seven weeks.
 
+## Today's build
+
+No project today — type-challenges are the workout. The capstone kicks off on **day 5**.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

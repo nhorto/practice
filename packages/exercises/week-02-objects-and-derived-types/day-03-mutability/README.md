@@ -50,6 +50,16 @@ pnpm exercise 02-03 4      # just exercise 04
   on someone else's array being the classic. Accepting `readonly T[]` also
   makes your function callable with MORE arrays, not fewer.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+Finish **milestone 3**, start **milestone 4** — filtering and sorting with derived types.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

@@ -49,6 +49,16 @@ pnpm exercise 02-02 3      # just exercise 03
 - **Utilities compose.** `Partial<Omit<Article, "id">>` reads exactly like the
   rule it encodes: "any field may change, except the id".
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+**Milestone 3** — validating unknown JSON on load.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

@@ -51,6 +51,16 @@ pnpm exercise 02-05 4      # just exercise 04
   an annotation would forget which keys exist. `satisfies` catches the
   mistakes AND keeps the precise type.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+**Milestone 5** — wire the CLI: exhaustive switch, `--help`, errors as values. Finish the project this week.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 That's week 2. Check the day off in the [dashboard](http://localhost:3000) — next week: unions, narrowing, and `unknown` in anger.

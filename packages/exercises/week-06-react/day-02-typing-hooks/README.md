@@ -53,6 +53,12 @@ pnpm exercise 06-02 3      # just exercise 03
 - Hooks in this package appear only inside component bodies that are never
   invoked — the type checker still checks every line of them.
 
+## Today's build (~30 min)
+
+**Project 04 — React todo app** · [`projects/04-react-todo`](../../../../projects/04-react-todo/GUIDE.md)
+
+**Milestone 2** — domain types + reducer with a discriminated `Action` union (today's exact topic).
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

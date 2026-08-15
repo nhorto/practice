@@ -1,6 +1,9 @@
 # Day 1 — Type Annotations & Functions
 
-**Time:** ~60–90 min · **Reading:** [Total TypeScript Essentials — Essential Types and Annotations](https://www.totaltypescript.com/books/total-typescript-essentials/essential-types-and-annotations)
+**Time:** ~60–90 min · **Reading:** [Total TypeScript Essentials — Essential Types and Annotations](https://github.com/total-typescript/total-typescript-book/blob/main/book-content/chapters/04-essential-types-and-annotations.md)
+
+> The readings link the book's source repo, which is always reachable. The same
+> chapters read more nicely at [totaltypescript.com](https://www.totaltypescript.com/books/total-typescript-essentials) if the site is up for you.
 
 ## Goals
 
@@ -42,6 +45,10 @@ pnpm exercise 01-01 2      # just exercise 02
   return types when you want to lock in a contract.
 - `any` is not an option. If you're stuck, `unknown` + narrowing is the escape
   hatch, never `any`.
+
+## Today's build
+
+The project track starts on **day 3** — today is drills only.
 
 ## Done?
 

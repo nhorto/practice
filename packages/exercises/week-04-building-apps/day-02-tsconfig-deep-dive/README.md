@@ -125,6 +125,16 @@ pnpm exercise 04-02 2      # just exercise 02
   and add only what makes them different. If you're editing the same flag in
   five configs, you've lost.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 5** — the library's own `tsconfig` and build setup.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

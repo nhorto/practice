@@ -53,6 +53,16 @@ pnpm exercise 04-03 2      # just exercise 02
   you see the structural-typing reason. Learn the reason; then break the rule
   deliberately in one named helper, not ad hoc.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+Catch-up day: finish any open milestone, or apply today's `as const` lesson to the library's constants.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

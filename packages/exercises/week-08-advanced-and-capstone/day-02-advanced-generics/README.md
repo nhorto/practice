@@ -51,6 +51,16 @@ pnpm exercise 08-02 2      # just exercise 02
   accumulator object) can't express the per-key relationship the API promises.
   One well-commented cast at the storage boundary beats `any` everywhere.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+Optional: revisit **milestone 4** of the ts-utils library with today's advanced emitter generics.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

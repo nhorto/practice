@@ -79,7 +79,11 @@ The package tsconfig is maximally strict (`strict`,
 Match `day-01`'s README: title, `**Time:**` + `**Reading:**` line, Goals
 (checkable "can do without looking it up" bullets), a 5-minute Warm-up typed
 from memory, the exercise list with runner commands, a "TS-dev mindset"
-callout, and a Done? footer. Reading links use the verified chapter mirrors:
+callout, a **Today's build** section handing off to the current project
+milestone (link `../../../../projects/<slug>/GUIDE.md`; say "no project today"
+when there isn't one), and a Done? footer. The build section is what connects
+the drills to the project track — a day README without one leaves the project
+orphaned. Reading links use the verified chapter mirrors:
 `https://github.com/total-typescript/total-typescript-book/blob/main/book-content/chapters/<file>.md`
 (files `01-setup-typescript.md` … `16-the-utils-folder.md`), plus official
 docs (zod.dev, orm.drizzle.team, react-typescript-cheatsheet.netlify.app).

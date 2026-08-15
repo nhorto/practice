@@ -59,6 +59,12 @@ pnpm exercise 07-01 2      # just exercise 02
 - A table definition is plain JavaScript — no database needed. That's why
   today's tests can assert on `users.name.notNull` at runtime.
 
+## Today's build (~30 min)
+
+**Project 05 — Full-stack notes** · [`projects/05-fullstack-notes`](../../../../projects/05-fullstack-notes/GUIDE.md)
+
+**Milestone 1** — scaffold Next.js + Drizzle, then start **milestone 2** (schema). Project kickoff.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

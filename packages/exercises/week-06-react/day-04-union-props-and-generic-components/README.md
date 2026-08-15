@@ -50,6 +50,12 @@ pnpm exercise 06-04 2      # just exercise 02
 - In `.tsx` files a generic arrow function needs `<Item,>` — the trailing
   comma stops the parser reading a JSX tag.
 
+## Today's build (~30 min)
+
+**Project 04 — React todo app** · [`projects/04-react-todo`](../../../../projects/04-react-todo/GUIDE.md)
+
+**Milestone 3** — apply today's discriminated-union props and generic components to the todo list.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

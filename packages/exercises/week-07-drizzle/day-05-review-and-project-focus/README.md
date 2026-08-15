@@ -43,6 +43,12 @@ anywhere in that chain, you've built a second source of truth that will
 drift. That's "derive, don't declare" applied to the database, and it's the
 habit project 05 is designed to cement.
 
+## Today's build (~30 min)
+
+**Project 05 — Full-stack notes** · [`projects/05-fullstack-notes`](../../../../projects/05-fullstack-notes/GUIDE.md)
+
+**Milestone 5**, then **milestone 6** if there's time — pages through the data layer, then search + tags.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) — then go build

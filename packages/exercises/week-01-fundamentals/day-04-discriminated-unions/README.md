@@ -63,6 +63,16 @@ pnpm exercise 01-04 2      # just exercise 02
   value to `never` costs one line and turns "we forgot to handle the new case"
   from a production bug into a compile error.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+Finish **milestone 1**, then start **milestone 2** — argv into a discriminated `Command` union (today's exact topic).
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

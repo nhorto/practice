@@ -47,6 +47,16 @@ pnpm exercise 03-04 3      # just exercise 03
   fine today and wrong after the next refactor. Written as a mapped type, it
   can never drift out of sync with `T`.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 4** — the typed event emitter, driven by an event map.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

@@ -85,6 +85,16 @@ pnpm exercise 01-05 2      # just exercise 02
 - **Trust the tooling loop.** When a type error looks confusing, hover the
   values involved and read the actual inferred types instead of guessing.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+**Milestone 2** — keep going on the `Command` union parser.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 That's week 1. Check the day off in the [dashboard](http://localhost:3000),

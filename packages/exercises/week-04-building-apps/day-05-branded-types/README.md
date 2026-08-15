@@ -67,6 +67,16 @@ pnpm exercise 04-05 2      # just exercise 02
 - **Brand at the boundary.** Parse and brand where data enters (API, DB,
   user input); the entire interior of the app then works with proven types.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 5** — final packaging pass; add branded types where the library needs them.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Week 4 complete — check the day off in the [dashboard](http://localhost:3000).

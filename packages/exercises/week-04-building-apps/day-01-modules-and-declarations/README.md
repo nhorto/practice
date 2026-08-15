@@ -67,6 +67,16 @@ pnpm exercise 04-01 2      # just exercise 02
   whatever you wrote. Declare the *narrowest* shape you actually use, next to
   where you use it, and let validation (week 5's Zod) guard the truly unknown.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 5** — package it like a real library: `exports` map, `import type`, build script.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

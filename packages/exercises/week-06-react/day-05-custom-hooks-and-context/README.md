@@ -54,6 +54,12 @@ pnpm exercise 06-05 3      # just exercise 03
 - The runtime parts worth testing (reducers yesterday, `parseStored` today)
   are pure functions — keep them extractable and test them without React.
 
+## Today's build (~30 min)
+
+**Project 04 — React todo app** · [`projects/04-react-todo`](../../../../projects/04-react-todo/GUIDE.md)
+
+**Milestones 5 and 6** — the Zod-validated `localStorage` hook, then polish. Finish the project.
+
 ## Done?
 
 Week 6 wrapped — check the day off in the [dashboard](http://localhost:3000)

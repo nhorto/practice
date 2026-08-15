@@ -58,6 +58,16 @@ pnpm exercise 03-03 4      # just exercise 04
 - **At trust boundaries (JSON, APIs), `as` is wishful thinking.** A guard
   that actually checks each property is the honest version.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 3** — type predicates and assertion functions (today's exact topic).
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

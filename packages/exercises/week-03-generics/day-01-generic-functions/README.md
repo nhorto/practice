@@ -49,6 +49,16 @@ pnpm exercise 03-01 2      # just exercise 02
   to support (`.length`, a key, spreading), and put *only that* in the
   `extends` clause.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 1** — `groupBy` + `pick`/`omit`: generics that infer. Project kickoff.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

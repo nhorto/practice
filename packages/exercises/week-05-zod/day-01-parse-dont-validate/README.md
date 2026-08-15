@@ -51,6 +51,16 @@ pnpm exercise 05-01 2      # just exercise 02
 - **One source of truth.** Never write a type by hand next to a schema that
   already describes it. `z.infer<typeof Schema>` can't drift; a duplicate can.
 
+## Today's build (~30 min)
+
+**Project 03 — Typed API client** · [`projects/03-zod-api-client`](../../../../projects/03-zod-api-client/GUIDE.md)
+
+**Milestone 1** — schema-first: model the API subset with Zod and derive types via `z.infer`. Project kickoff.
+
+```bash
+pnpm --filter project-zod-api-client test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

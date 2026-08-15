@@ -50,6 +50,16 @@ pnpm exercise 05-05 3      # just exercise 03
 - **The week in one sentence:** schemas guard the boundaries, `z.infer`
   carries the proof everywhere else — write the shape once, derive forever.
 
+## Today's build (~30 min)
+
+**Project 03 — Typed API client** · [`projects/03-zod-api-client`](../../../../projects/03-zod-api-client/GUIDE.md)
+
+**Milestone 4** then **milestone 5** — branded IDs in the cache, then the CLI report. Finish the project.
+
+```bash
+pnpm --filter project-zod-api-client test
+```
+
 ## Done?
 
 Week 5 complete — check the day off in the [dashboard](http://localhost:3000). Next week: typed React.

@@ -52,6 +52,16 @@ pnpm exercise 05-02 3      # just exercise 03
   different wire formats. Match the schema to what the data source actually
   sends, not to what's convenient.
 
+## Today's build (~30 min)
+
+**Project 03 — Typed API client** · [`projects/03-zod-api-client`](../../../../projects/03-zod-api-client/GUIDE.md)
+
+Finish **milestone 1**, start **milestone 2** — `fetchAndParse<T>`, one typed doorway to the network.
+
+```bash
+pnpm --filter project-zod-api-client test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

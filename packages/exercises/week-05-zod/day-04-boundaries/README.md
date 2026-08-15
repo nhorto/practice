@@ -52,6 +52,16 @@ pnpm exercise 05-04 2      # just exercise 02
   `any`, which silently infects everything it touches. Treat network JSON as
   `unknown` and parse it — never `as User`.
 
+## Today's build (~30 min)
+
+**Project 03 — Typed API client** · [`projects/03-zod-api-client`](../../../../projects/03-zod-api-client/GUIDE.md)
+
+**Milestone 2** — finish the typed fetch boundary; start **milestone 4** (typed cache).
+
+```bash
+pnpm --filter project-zod-api-client test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

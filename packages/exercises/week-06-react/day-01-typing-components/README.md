@@ -54,6 +54,12 @@ pnpm exercise 06-01 2      # just exercise 02
 - There's no DOM in this package — tests call components as plain functions
   and assert on `element.props`. Nothing renders, and nothing needs to.
 
+## Today's build (~30 min)
+
+**Project 04 — React todo app** · [`projects/04-react-todo`](../../../../projects/04-react-todo/GUIDE.md)
+
+**Milestone 1** — scaffold with Vite. Copy in the provided `styles.css`; you write zero CSS.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

@@ -55,6 +55,10 @@ pnpm exercise 08-04 2      # just exercise 02
   both the runtime gate and the compile-time type — one definition, both
   worlds. Never write the type by hand next to the schema.
 
+## Today's build
+
+No project today, but today's exercises ARE the capstone's type design — you'll reuse them on day 5.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

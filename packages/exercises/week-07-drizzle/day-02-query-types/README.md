@@ -61,6 +61,12 @@ pnpm exercise 07-02 3      # just exercise 03
   `string`. Then a typo'd status is a compile error, not an empty result set
   at 2am.
 
+## Today's build (~30 min)
+
+**Project 05 — Full-stack notes** · [`projects/05-fullstack-notes`](../../../../projects/05-fullstack-notes/GUIDE.md)
+
+**Milestone 2** into **milestone 3** — first migration, then the typed data layer.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

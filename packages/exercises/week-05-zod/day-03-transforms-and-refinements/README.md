@@ -53,6 +53,16 @@ pnpm exercise 05-03 4      # just exercise 04
   and query strings are all strings. Inside your program, numbers should
   already be numbers.
 
+## Today's build (~30 min)
+
+**Project 03 — Typed API client** · [`projects/03-zod-api-client`](../../../../projects/03-zod-api-client/GUIDE.md)
+
+**Milestone 3** — transforms: API shape into domain shape (today's exact topic).
+
+```bash
+pnpm --filter project-zod-api-client test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

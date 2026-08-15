@@ -57,6 +57,12 @@ pnpm exercise 06-03 2      # just exercise 02
 - Derive, don't duplicate: `ComponentProps<typeof X>` keeps wrappers correct
   when `X` changes.
 
+## Today's build (~30 min)
+
+**Project 04 — React todo app** · [`projects/04-react-todo`](../../../../projects/04-react-todo/GUIDE.md)
+
+**Milestone 3** into **milestone 4** — typed props, then typed forms and events.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

@@ -47,6 +47,10 @@ pnpm exercise 01-02 3      # just exercise 03
 - `any` turns the type checker off; `unknown` keeps it on and makes you prove
   what you have before you use it. When in doubt: `unknown`.
 
+## Today's build
+
+The project track starts on **day 3** — today is drills only.
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

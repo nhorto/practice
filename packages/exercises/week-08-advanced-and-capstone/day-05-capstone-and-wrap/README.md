@@ -56,6 +56,12 @@ pnpm exercise 08-05 2      # just exercise 02
   asking "what should be impossible?" — then made the compiler enforce it.
   Keep designing that way and TypeScript writes half your tests.
 
+## Today's build (~30 min)
+
+**Project 06 — Capstone: AI prompt library** · [`projects/06-capstone-ai-app`](../../../../projects/06-capstone-ai-app/GUIDE.md)
+
+**Milestone 1** — design the domain types first. Capstone kickoff; it runs as long as you want it to.
+
 ## Done?
 
 Check the final day off in the [dashboard](http://localhost:3000) — and go

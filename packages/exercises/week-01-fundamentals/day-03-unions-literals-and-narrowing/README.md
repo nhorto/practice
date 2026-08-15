@@ -48,6 +48,16 @@ pnpm exercise 01-03 2      # just exercise 02
   watches your ordinary runtime checks and shrinks the type in each branch.
   Hover the value inside each branch and watch the union melt away.
 
+## Today's build (~30 min)
+
+**Project 01 — CLI Task Tracker** · [`projects/01-cli-task-tracker`](../../../../projects/01-cli-task-tracker/GUIDE.md)
+
+**Milestone 1** — model the domain, write the pure core. This is the project kickoff: read the guide's intro first.
+
+```bash
+pnpm --filter project-cli-task-tracker test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.

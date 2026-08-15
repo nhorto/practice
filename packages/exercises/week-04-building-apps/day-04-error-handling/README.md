@@ -85,6 +85,16 @@ pnpm exercise 04-04 2      # just exercise 02
   one line and turns every forgotten case into a compile error at the exact
   spot that needs editing.
 
+## Today's build (~30 min)
+
+**Project 02 — ts-utils library** · [`projects/02-ts-utils-library`](../../../../projects/02-ts-utils-library/GUIDE.md)
+
+**Milestone 2** revisited — harden `Result<T, E>` with today's error-handling patterns.
+
+```bash
+pnpm --filter project-ts-utils test
+```
+
 ## Done?
 
 Check the day off in the [dashboard](http://localhost:3000) and skim tomorrow's README.
