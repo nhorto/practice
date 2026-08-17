@@ -1,0 +1,353 @@
+/* ==========================================================================
+   Project 05 — Full-stack Notes: the complete stylesheet.
+   Copy into your scaffolded Next.js app as app/globals.css (replacing the
+   generated one). It is imported by app/layout.tsx already. You write ZERO
+   css in this project — every class the guide mentions is styled here.
+   ========================================================================== */
+
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface-2: #efede8;
+  --border: #e0ddd5;
+  --text: #23211c;
+  --text-muted: #79746a;
+  --accent: #0d7a5f;
+  --accent-soft: #d7ece5;
+  --danger: #c2410c;
+  --tag-bg: #ede9fe;
+  --tag-text: #5b21b6;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgb(40 35 20 / 0.05), 0 6px 18px rgb(40 35 20 / 0.06);
+  --font:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171613;
+    --surface: #201f1b;
+    --surface-2: #2a2823;
+    --border: #3a372f;
+    --text: #ece9e2;
+    --text-muted: #a49e91;
+    --accent: #34d3a6;
+    --accent-soft: #123f33;
+    --danger: #fb923c;
+    --tag-bg: #322a52;
+    --tag-text: #c4b5fd;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 6px 18px rgb(0 0 0 / 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* --- Layout ------------------------------------------------------------- */
+
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  margin-bottom: 2rem;
+}
+
+.site-header__inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-header__title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.site-header__nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.25rem;
+}
+
+/* --- Note grid & cards --------------------------------------------------- */
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.note-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow);
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+
+.note-card__title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.note-card__title a {
+  color: inherit;
+}
+
+.note-card__body {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-card__meta {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.note-grid__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 1rem;
+}
+
+/* --- Tags ---------------------------------------------------------------- */
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tag {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* --- Forms --------------------------------------------------------------- */
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.note-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.note-form input[type="text"],
+.note-form textarea,
+.search-form input[type="search"] {
+  font: inherit;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.note-form textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.note-form input:focus,
+.note-form textarea:focus,
+.search-form input[type="search"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.note-form__error {
+  color: var(--danger);
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.note-form__actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.55rem 1.1rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  transition: filter 120ms ease;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.button--danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.button--danger:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  filter: none;
+}
+
+/* --- Search -------------------------------------------------------------- */
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-form input[type="search"] {
+  flex: 1;
+}
+
+/* --- Note detail --------------------------------------------------------- */
+
+.note-detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+}
+
+.note-detail__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+}
+
+.note-detail__meta {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.note-detail__body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.note-detail__actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}

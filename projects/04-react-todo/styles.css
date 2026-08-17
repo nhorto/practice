@@ -1,0 +1,252 @@
+/* ==========================================================================
+   Project 04 — React Todo: the complete stylesheet.
+   Copy this file into your scaffolded app as src/styles.css and import it
+   from src/main.tsx (`import "./styles.css";`). You write ZERO css in this
+   project — every class the guide mentions is styled here.
+   ========================================================================== */
+
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef0f4;
+  --border: #d9dde3;
+  --text: #1c2330;
+  --text-muted: #6b7484;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --danger: #dc2626;
+  --done: #16a34a;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgb(16 24 40 / 0.06), 0 4px 12px rgb(16 24 40 / 0.06);
+  --font:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11141a;
+    --surface: #1a1f29;
+    --surface-2: #232937;
+    --border: #333b4b;
+    --text: #e7eaf0;
+    --text-muted: #96a0b1;
+    --accent: #60a5fa;
+    --accent-soft: #1e3a5f;
+    --danger: #f87171;
+    --done: #4ade80;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 12px rgb(0 0 0 / 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- App shell ---------------------------------------------------------- */
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+}
+
+.app__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem;
+}
+
+.app__subtitle {
+  margin: 0 0 1.75rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* --- New-todo form ------------------------------------------------------ */
+
+.todo-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.todo-form input[type="text"] {
+  flex: 1;
+  padding: 0.65rem 0.9rem;
+  font: inherit;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.todo-form input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
+
+.todo-form input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.65rem 1.1rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  transition: filter 120ms ease, background 120ms ease;
+}
+
+button:hover {
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Filters ------------------------------------------------------------ */
+
+.filters {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.filter {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.filter:hover {
+  color: var(--text);
+  background: var(--surface-2);
+  filter: none;
+}
+
+.filter--active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* --- Todo list ---------------------------------------------------------- */
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.todo-list__empty {
+  padding: 2.5rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+.todo-item input[type="checkbox"] {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--done);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.todo-item__title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.todo-item--done .todo-item__title {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--done);
+  text-decoration-thickness: 1.5px;
+}
+
+.todo-item__delete {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 6px;
+  opacity: 0.6;
+}
+
+.todo-item__delete:hover {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  opacity: 1;
+  filter: none;
+}
+
+/* --- Footer / counts ---------------------------------------------------- */
+
+.app__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.app__clear-done {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.25rem 0.5rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.app__clear-done:hover {
+  color: var(--danger);
+  filter: none;
+}
