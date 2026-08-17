@@ -75,6 +75,17 @@ pnpm test:solutions          # verify every solution is green
 pnpm web                     # dashboard + playground
 ```
 
+## A note on deployment
+
+This repo is meant to run locally — `pnpm web` is the intended way to use the
+dashboard and playground. The repo is still connected to a Vercel project from
+its previous life, so `vercel.json` disables automatic deployments to keep them
+from failing on every push.
+
+To host it instead: in the Vercel project's **Settings → Build & Deployment**,
+set **Root Directory** to `apps/web`, then delete `vercel.json`. Vercel will
+detect Next.js there and build it correctly.
+
 ## Where the material comes from
 
 - [Total TypeScript Essentials](https://www.totaltypescript.com/books/total-typescript-essentials)
